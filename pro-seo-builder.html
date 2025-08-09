@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pro SEO Builder — Article + FAQ + Advanced Schema (No‑Code)</title>
+<style>
+  :root{--bg:#0b1220;--card:#0f172a;--line:#1e2a44;--muted:#9fb1c9;--accent:#7aa2ff;--good:#22c55e;--warn:#f59e0b;--bad:#ef4444;}
+  *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#e6eefc}
+  a{color:var(--accent)} .wrap{max-width:1200px;margin:0 auto;padding:20px}
+  header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:8px}
+  h1{font-size:1.35rem;margin:0} .tag{border:1px solid var(--line);background:#0c1426;padding:4px 10px;border-radius:999px;color:#cfe0ff}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+  .grid{display:grid;gap:10px} .g-2{grid-template-columns:repeat(2,minmax(0,1fr))} .g-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  label{font-size:.9rem;color:#cfe0ff} input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0d1626;color:#e6eefc;outline:none}
+  textarea{min-height:140px;resize:vertical} .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{background:var(--accent);border:none;color:#0b1220;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+  .btn.alt{background:#1a2440;color:#e6eefc} .btn.danger{background:#ef4444;color:#fff} .btn.good{background:#22c55e;color:#06280e}
+  .muted{color:var(--muted);font-size:.9rem} .small{font-size:.85rem} .hr{height:1px;background:var(--line);margin:10px 0}
+  details{border:1px solid var(--line);border-radius:12px;padding:10px;background:#0d1626}
+  canvas{max-width:100%;border:1px dashed var(--line);border-radius:12px;background:#0a1222}
+  .note{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#0c1528}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Pro SEO Builder <span class="tag">Article + FAQ + Advanced Schema</span></h1>
+      <div class="row">
+        <button class="btn alt" onclick="saveDefaults()">Save Brand Defaults</button>
+        <button class="btn alt" onclick="loadDefaults()">Load Defaults</button>
+        <button class="btn danger" onclick="clearDefaults()">Clear Defaults</button>
+      </div>
+    </header>
+    <div class="note small">No‑code tool. Fill the form → Generate → Download HTML/PHP. Brand defaults are stored locally in your browser via localStorage.</div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">1) Page Basics</h3>
+      <div class="grid g-2">
+        <div><label>Final URL (canonical / og:url)</label><input id="pageUrl" placeholder="https://invictaa.com/exams/updates/ssc-cgl/"></div>
+        <div><label>Output file name (no ext)</label><input id="fileName" placeholder="ssc-cgl-2025-updates"></div>
+      </div>
+      <div class="grid g-2">
+        <div><label>Meta Title</label><input id="pageTitle" placeholder="SSC CGL 2025 Latest Updates, Notifications & Exam News | Invictaa"></div>
+        <div><label>Meta Description</label><input id="pageDescription" placeholder="Get all SSC CGL 2025 latest updates..."></div>
+      </div>
+      <div class="grid g-3">
+        <div><label>og:image / twitter:image (1200×630)</label><input id="ogImage" placeholder="https://invictaa.com/images/ssc-cgl-2025-updates.jpg"></div>
+        <div><label>Robots</label><select id="robots">
+          <option value="index,follow">index,follow</option>
+          <option value="noindex,follow">noindex,follow</option>
+          <option value="index,nofollow">index,nofollow</option>
+          <option value="noindex,nofollow">noindex,nofollow</option>
+        </select></div>
+        <div><label>Breadcrumb Last Name</label><input id="breadcrumbLast" placeholder="SSC CGL Updates"></div>
+      </div>
+      <div class="hr"></div>
+      <div class="row">
+        <button class="btn alt" onclick="openAB()">Meta Title/Desc A/B Ideas</button>
+        <span class="muted small">Boost CTR: test 3–4 variants.</span>
+      </div>
+      <details id="abIdeas" style="display:none;margin-top:8px">
+        <summary>Suggested Variants</summary>
+        <div id="abList" class="small"></div>
+      </details>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">2) Website / Organization</h3>
+      <div class="grid g-3">
+        <div><label>Brand Name</label><input id="orgName" placeholder="Invictaa"></div>
+        <div><label>Home URL</label><input id="orgUrl" placeholder="https://invictaa.com/"></div>
+        <div><label>Logo URL (square PNG)</label><input id="orgLogo" placeholder="https://invictaa.com/path-to-your-logo.png"></div>
+      </div>
+      <div class="hr"></div>
+      <div class="row" style="justify-content:space-between">
+        <label>Social Links</label>
+        <div class="row">
+          <button class="btn alt" onclick="addSocial()">+ Add social link</button>
+          <button class="btn alt" onclick="importSocialCsv()">Import CSV</button>
+        </div>
+      </div>
+      <div id="socialList"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">3) Article Content</h3>
+      <div class="grid g-2">
+        <div><label>Headline (H1)</label><input id="articleHeadline" placeholder="SSC CGL 2025 – Latest Updates & Official Announcements"></div>
+        <div><label>Language</label><input id="inLanguage" value="en"></div>
+      </div>
+      <div>
+        <label>Body (HTML allowed)</label>
+        <textarea id="articleBody" placeholder="<p>Write your article here...</p>"></textarea>
+      </div>
+      <div class="hr"></div>
+      <div class="grid g-3">
+        <div><label>Add YouTube URL (optional)</label><input id="videoUrl" placeholder="https://www.youtube.com/watch?v=..."></div>
+        <div><label>Event/Announcement Date (optional)</label><input id="eventDate" type="datetime-local"></div>
+        <div><label>Add HowTo steps? (comma separated)</label><input id="howtoSteps" placeholder="Step 1, Step 2, Step 3"></div>
+      </div>
+      <div class="row small muted">If provided, JSON‑LD will include VideoObject / Event / HowTo schema automatically.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">4) FAQs</h3>
+      <div class="row" style="justify-content:space-between">
+        <div class="muted small">Add questions visible on page (to match schema).</div>
+        <div>
+          <button class="btn alt" onclick="addFaq()">+ Add FAQ</button>
+        </div>
+      </div>
+      <div id="faqList"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">5) Related Links (Auto Internal Linking)</h3>
+      <div class="muted small">Add relevant URLs (title|url). These show as a “Related Articles” list at bottom.</div>
+      <div class="row">
+        <input id="relatedInput" placeholder="SSC CGL Syllabus|https://invictaa.com/exams/ssc/ssc-cgl-syllabus/">
+        <button class="btn alt" onclick="addRelated()">+ Add</button>
+      </div>
+      <div id="relatedList"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">6) OG Image Generator (1200×630)</h3>
+      <div class="grid g-3">
+        <div><label>OG Title</label><input id="ogText" placeholder="SSC CGL 2025 Updates"></div>
+        <div><label>Subtitle (optional)</label><input id="ogSub" placeholder="Latest News & Announcements"></div>
+        <div><label>Logo URL (optional)</label><input id="ogLogo" placeholder=""></div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" onclick="renderOG()">Render</button>
+        <button class="btn alt" onclick="downloadOG()">Download PNG</button>
+      </div>
+      <canvas id="ogCanvas" width="1200" height="630"></canvas>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">7) Speed & UX (safe toggles)</h3>
+      <div class="grid g-3 small">
+        <label><input type="checkbox" id="lazyImages" checked> Add loading="lazy" to images</label>
+        <label><input type="checkbox" id="deferScripts" checked> Defer non-critical scripts</label>
+        <label><input type="checkbox" id="preloadHero" checked> Preload hero OG image</label>
+        <label><input type="checkbox" id="inlineCritical" checked> Inline minimal critical CSS</label>
+        <label><input type="checkbox" id="fontPreload"> Preload font URL</label>
+        <input id="fontUrl" placeholder="https://cdn.example.com/fonts/Inter.woff2">
+      </div>
+      <div class="hr"></div>
+      <details>
+        <summary>.htaccess Speed Snippets (optional)</summary>
+        <pre class="small">
+# Compression
+AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+# Caching
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresDefault "access plus 1 day"
+</IfModule>
+        </pre>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <button class="btn good" onclick="generate('html')">Generate & Download HTML</button>
+        <button class="btn good" onclick="generate('php')">Generate & Download PHP</button>
+        <span class="muted small">Includes canonical, OG/Twitter, and JSON‑LD (WebSite, Organization, BreadcrumbList, Article, + optional Video/Event/HowTo/FAQ).</span>
+      </div>
+    </div>
+
+    <footer class="small muted">Tip: Keep the Final URL exactly as it will appear live. Re‑generate after edits to refresh dateModified.</footer>
+  </div>
+
+<script>
+// --------- brand defaults (localStorage) ----------
+function saveDefaults(){
+  const data = {
+    orgName: v("orgName"), orgUrl: v("orgUrl"), orgLogo: v("orgLogo"),
+    socials: getSocials()
+  };
+  localStorage.setItem("proseo_defaults", JSON.stringify(data));
+  alert("Saved brand defaults in this browser.");
+}
+function loadDefaults(){
+  const raw = localStorage.getItem("proseo_defaults");
+  if(!raw){ alert("No defaults found."); return; }
+  const d = JSON.parse(raw);
+  s("orgName", d.orgName || ""); s("orgUrl", d.orgUrl || ""); s("orgLogo", d.orgLogo || "");
+  document.getElementById("socialList").innerHTML = "";
+  (d.socials || []).forEach(u => addSocial(u));
+}
+function clearDefaults(){
+  localStorage.removeItem("proseo_defaults");
+  alert("Cleared defaults in this browser.");
+}
+function v(id){ return document.getElementById(id).value.trim(); }
+function s(id,val){ document.getElementById(id).value = val; }
+
+// --------- dynamic UI lists ----------
+function el(tag, attrs={}, children=[]){ const e=document.createElement(tag);
+  Object.entries(attrs).forEach(([k,v])=>{ if(k==="class") e.className=v; else if(k==="html") e.innerHTML=v; else e.setAttribute(k,v); });
+  children.forEach(c=>e.appendChild(c)); return e; }
+
+function addSocial(value=""){
+  const row = el("div",{class:"grid g-2"});
+  row.appendChild(el("div",{},[el("input",{placeholder:"https://...", value:value})]));
+  row.appendChild(el("div",{},[el("button",{class:"btn danger",onclick:"this.parentNode.parentNode.remove()"},[document.createTextNode("Remove")])]))
+  document.getElementById("socialList").appendChild(row);
+}
+function getSocials(){
+  const rows = document.querySelectorAll("#socialList input");
+  const vals = []; rows.forEach(r=>{ if(r.value.trim()) vals.push(r.value.trim()); });
+  return vals;
+}
+function importSocialCsv(){
+  const csv = prompt("Paste social URLs separated by comma or newline:");
+  if(!csv) return;
+  const arr = csv.split(/[\n,]+/).map(x=>x.trim()).filter(Boolean);
+  arr.forEach(u=>addSocial(u));
+}
+
+function addFaq(q="",a=""){
+  const card = el("div",{class:"card"});
+  card.appendChild(el("div",{class:"grid g-2"},[
+    el("div",{},[el("input",{placeholder:"Question", value:q})]),
+    el("div",{},[el("input",{placeholder:"Answer", value:a})])
+  ]));
+  card.appendChild(el("div",{class:"row",style:"justify-content:flex-end"},[
+    el("button",{class:"btn danger",onclick:"this.parentNode.parentNode.remove()"},[document.createTextNode("Remove FAQ")])
+  ]));
+  document.getElementById("faqList").appendChild(card);
+}
+function getFaqs(){
+  const cards = document.querySelectorAll("#faqList .card");
+  const list = [];
+  cards.forEach(c=>{
+    const ins = c.querySelectorAll("input");
+    if(ins.length>=2){ const q=ins[0].value.trim(), a=ins[1].value.trim(); if(q&&a) list.push({q,a}); }
+  });
+  return list;
+}
+
+function addRelated(){
+  const raw = v("relatedInput");
+  if(!raw) return;
+  const [title,url] = raw.split("|");
+  if(!title || !url) { alert("Invalid format. Use: Title|URL"); return; }
+  const div = el("div",{class:"row"},[
+    el("input",{value:(title||"").trim()+"|"+(url||"").trim(), style:"flex:1", readonly: true}),
+    el("button",{class:"btn danger",onclick:"this.parentNode.remove()"},[document.createTextNode("Remove")])
+  ]);
+  document.getElementById("relatedList").appendChild(div);
+  s("relatedInput","");
+}
+function getRelated(){
+  const rows = document.querySelectorAll("#relatedList input");
+  const list = [];
+  rows.forEach(r=>{
+    const [t,u] = r.value.split("|");
+    if(t && u) list.push({t:t.trim(), u:u.trim()});
+  });
+  return list;
+}
+
+// --------- A/B ideas ----------
+function openAB(){
+  const title = v("pageTitle");
+  const base = title || "SSC CGL 2025 Latest Updates, Notifications & Exam News | Invictaa";
+  const ideas = [
+    base,
+    "SSC CGL 2025: Latest Updates, Exam Dates & Official News",
+    "SSC CGL 2025 Updates: Notification, Syllabus Changes & Admit Card",
+    "SSC CGL 2025 — Live Updates, Important Announcements & PDF Links",
+  ];
+  const desc = v("pageDescription") || "Get all SSC CGL 2025 latest updates, official notifications, changes in exam dates, syllabus, and important announcements.";
+  const descIdeas = [
+    desc,
+    "Live tracker for SSC CGL 2025 — exam dates, syllabus changes, admit card & result updates at one place.",
+    "Stay ahead with verified SSC CGL 2025 updates: notifications, schedule changes, and preparation tips.",
+    "All SSC CGL 2025 news compiled: dates, pattern updates, region-wise links and PDFs."
+  ];
+  const box = document.getElementById("abList");
+  box.innerHTML = "<b>Titles</b><br>• " + ideas.join("<br>• ") + "<br><br><b>Descriptions</b><br>• " + descIdeas.join("<br>• ");
+  document.getElementById("abIdeas").style.display = "block";
+}
+
+// --------- OG image canvas ----------
+async function renderOG(){
+  const c = document.getElementById("ogCanvas"), ctx=c.getContext("2d");
+  const g = ctx.createLinearGradient(0,0,1200,630);
+  g.addColorStop(0,"#0b1220"); g.addColorStop(1,"#182a54"); ctx.fillStyle=g; ctx.fillRect(0,0,1200,630);
+  ctx.strokeStyle="rgba(255,255,255,.07)";
+  for(let x=60;x<1200;x+=60){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,630); ctx.stroke(); }
+  for(let y=60;y<630;y+=60){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(1200,y); ctx.stroke(); }
+  const title = v("ogText") || "SSC CGL 2025 Updates";
+  ctx.fillStyle="#eaf2ff";
+  ctx.font="bold 72px system-ui,Segoe UI,Roboto";
+  wrapText(ctx, title, 60, 260, 1080, 72);
+  const sub = v("ogSub");
+  if(sub){ ctx.font="500 36px system-ui,Segoe UI,Roboto"; ctx.fillStyle="#c8d6f0"; wrapText(ctx, sub, 60, 340, 1000, 36); }
+  const logoUrl = v("ogLogo") || v("orgLogo");
+  if(logoUrl){
+    try{
+      const img = await loadImage(logoUrl);
+      const size = 120;
+      ctx.save(); ctx.globalAlpha=0.95;
+      ctx.drawImage(img, 1200-size-40, 40, size, size);
+      ctx.restore();
+    }catch(e){ console.warn("Logo load failed", e); alert("Failed to load logo image. Check the URL and CORS policy."); }
+  }
+}
+function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+  const words=text.split(" "); let line=""; let yy=y;
+  for(let n=0;n<words.length;n++){
+    const testLine = line + words[n] + " ";
+    const metrics = ctx.measureText(testLine);
+    if(metrics.width > maxWidth && n>0){ ctx.fillText(line, x, yy); line=words[n]+" "; yy+=lineHeight+8; }
+    else line = testLine;
+  } ctx.fillText(line, x, yy);
+}
+function loadImage(url){ return new Promise((res,rej)=>{ const i=new Image(); i.crossOrigin="anonymous"; i.onload=()=>res(i); i.onerror=rej; i.src=url; }); }
+function downloadOG(){
+  const c = document.getElementById("ogCanvas");
+  const a = document.createElement("a"); a.href = c.toDataURL("image/png"); a.download="og-image-1200x630.png"; a.click();
+}
+
+// --------- Schema builders ----------
+function buildBreadcrumb(pageUrl, lastName){
+  try {
+    const url = new URL(pageUrl);
+    const pathParts = url.pathname.split('/').filter(p => p);
+    const itemList = [{"@type": "ListItem", "position": 1, "name": "Home", "item": url.origin + "/"}];
+    let currentPath = url.origin;
+    pathParts.forEach((part, index) => {
+        if (index < pathParts.length - 1) { // it's a directory
+            currentPath += `/${part}`;
+            itemList.push({"@type": "ListItem", "position": index + 2, "name": part.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), "item": currentPath + "/"});
+        } else { // it's the last part
+             itemList.push({"@type": "ListItem", "position": index + 2, "name": lastName || part.replace(/-/g, ' '), "item": pageUrl});
+        }
+    });
+    return itemList;
+  } catch (e) {
+    console.error("Invalid URL for breadcrumb:", pageUrl, e);
+    // Return a default simple breadcrumb
+    return [{"@type":"ListItem","position":1,"name":"Home","item":v("orgUrl") || "#"}, {"@type":"ListItem","position":2,"name":lastName||"Article","item":pageUrl || "#"}];
+  }
+}
+function buildJSONLD(opts){
+  const now = new Date().toISOString();
+  const graph = [
+    {"@type":"WebSite","@id":opts.orgUrl+"#website","url":opts.orgUrl,"name":opts.orgName,
+     "publisher":{"@id":opts.orgUrl+"#organization"},
+     "potentialAction":{"@type":"SearchAction","target":`${opts.orgUrl}?s={search_term_string}`,"query-input":"required name=search_term_string"}
+    },
+    {"@type":"Organization","@id":opts.orgUrl+"#organization","name":opts.orgName,"url":opts.orgUrl,
+      "logo":{"@type":"ImageObject","url":opts.orgLogo,"width":512,"height":512},
+      "sameAs":opts.socials
+    },
+    {"@type":"BreadcrumbList","@id":opts.pageUrl+"#breadcrumb","itemListElement":buildBreadcrumb(opts.pageUrl, opts.breadcrumbLast)},
+    {"@type":"Article","@id":opts.pageUrl+"#article","isPartOf":{"@id":opts.orgUrl+"#website"},
+      "mainEntityOfPage":{"@type":"WebPage","@id":opts.pageUrl},
+      "headline":opts.articleHeadline||opts.pageTitle,
+      "description":opts.pageDescription,
+      "inLanguage":opts.inLanguage,
+      "author":{"@type":"Organization","@id":opts.orgUrl+"#organization"},
+      "publisher":{"@id":opts.orgUrl+"#organization"},
+      "datePublished":now,"dateModified":now,
+      "image":{"@type":"ImageObject","url":opts.ogImage,"width":1200,"height":630},
+      "articleSection":["Updates","Notifications","Exam News"]
+    }
+  ];
+  if(opts.videoUrl){
+    graph.push({
+      "@type":"VideoObject","@id":opts.pageUrl+"#video",
+      "name":opts.pageTitle,"description":opts.pageDescription,
+      "thumbnailUrl":[opts.ogImage],"uploadDate":now,"contentUrl":opts.videoUrl,"embedUrl":opts.videoUrl.replace("watch?v=", "embed/")
+    });
+  }
+  if(opts.eventDate){
+    graph.push({
+      "@type":"Event","@id":opts.pageUrl+"#event","name":opts.articleHeadline||opts.pageTitle,
+      "startDate":opts.eventDate,"eventAttendanceMode":"https://schema.org/OnlineEventAttendanceMode",
+      "eventStatus":"https://schema.org/EventScheduled","url":opts.pageUrl,"organizer":{"@id":opts.orgUrl+"#organization"}
+    });
+  }
+  if(opts.howto.length){
+    graph.push({
+      "@type":"HowTo","@id":opts.pageUrl+"#howto","name":opts.articleHeadline||opts.pageTitle,
+      "step":opts.howto.map((x,i)=>({"@type":"HowToStep", "name":`Step ${i+1}`, "text":x}))
+    });
+  }
+  if(opts.faqs.length){
+    graph.push({"@type":"FAQPage","@id":opts.pageUrl+"#faq","mainEntity":opts.faqs.map(x=>({"@type":"Question","name":x.q,"acceptedAnswer":{"@type":"Answer","text":x.a}}))});
+  }
+  return {"@context":"https://schema.org","@graph":graph};
+}
+
+// --------- Generator ----------
+function generate(which){
+  const required = ["pageUrl","pageTitle","pageDescription","orgName","orgUrl"];
+  for(const id of required){ if(!v(id)){ alert(`Required field is missing: ${id}`); return; } }
+  
+  // URL validation
+  try { new URL(v("pageUrl")); new URL(v("orgUrl")); }
+  catch(e) { alert("Invalid URL format in 'Final URL' or 'Home URL'. Please enter a full URL like https://example.com"); return; }
+
+  const data = {
+    pageUrl:v("pageUrl"), fileName:(v("fileName")||"seo-article").replace(/[^a-z0-9\-]+/gi,"-"),
+    pageTitle:v("pageTitle"), pageDescription:v("pageDescription"), ogImage:v("ogImage"),
+    robots:v("robots"), breadcrumbLast:v("breadcrumbLast")||"Article",
+    orgName:v("orgName"), orgUrl:v("orgUrl"), orgLogo:v("orgLogo"), socials:getSocials(),
+    articleHeadline:v("articleHeadline")||v("pageTitle"), inLanguage:v("inLanguage")||"en",
+    articleBody:document.getElementById("articleBody").value,
+    videoUrl:v("videoUrl"), eventDate:v("eventDate"), howto:(v("howtoSteps")? v("howtoSteps").split(",").map(x=>x.trim()).filter(Boolean):[]),
+    faqs:getFaqs(),
+    speed:{ lazy:gi("lazyImages"), defer:gi("deferScripts"), preload:gi("preloadHero"), inline:gi("inlineCritical"), fontPre:gi("fontPreload"), fontUrl:v("fontUrl") }
+  };
+  const jsonLD = buildJSONLD(data);
+  const schemaScript = `<script type="application/ld+json">\n${JSON.stringify(jsonLD,null,2)}\n</script>`;
+
+  let criticalCss = data.speed.inline ? `
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:#0f172a; background-color:#fff;}
+    .container{max-width:980px;margin:0 auto;padding:24px 16px}
+    header{padding:16px 0;border-bottom:1px solid #e5e7eb;margin-bottom:12px}
+    h1{font-size:1.875rem;line-height:1.2;margin:0 0 8px}
+    .meta{color:#475569;font-size:.925rem;margin-bottom:24px}
+    article{line-height:1.7} article img{max-width:100%;height:auto;}
+    article h2{margin-top:24px;font-size:1.25rem}
+    nav[aria-label="breadcrumb"] ol{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;}
+    nav[aria-label="breadcrumb"] li{display:flex;align-items:center;}
+    nav[aria-label="breadcrumb"] li+li:before{content:'>';margin:0 8px;color:#6b7280;}
+    .faq, .related{margin-top:36px}
+    .faq h2, .related h2{font-size:1.25rem}
+    .faq details{border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;margin:10px 0;background:#fafafa; cursor:pointer;}
+    footer{margin-top:48px;padding:16px 0;border-top:1px solid #e5e7eb;color:#64748b;font-size:.9rem}
+    a{color:#2563eb;text-decoration:none} a:hover{text-decoration:underline}
+    .video{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:20px 0;}
+    .video iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
+  ` : "";
+
+  const preloadParts = [];
+  if(data.speed.preload && data.ogImage) preloadParts.push(`<link rel="preload" as="image" href="${esc(data.ogImage)}">`);
+  if(data.speed.fontPre && data.speed.fontUrl) preloadParts.push(`<link rel="preload" as="font" href="${esc(data.speed.fontUrl)}" type="font/woff2" crossorigin>`);
+
+  const head = `
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${esc(data.pageTitle)}</title>
+  <meta name="description" content="${esc(data.pageDescription)}">
+  <meta name="robots" content="${esc(data.robots)}">
+  <link rel="canonical" href="${esc(data.pageUrl)}">
+  ${preloadParts.join("\n  ")}
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="${esc(data.pageUrl)}">
+  <meta property="og:title" content="${esc(data.pageTitle)}">
+  <meta property="og:description" content="${esc(data.pageDescription)}">
+  <meta property="og:image" content="${esc(data.ogImage)}">
+  <meta property="article:published_time" content="${new Date().toISOString()}">
+  <meta property="article:modified_time" content="${new Date().toISOString()}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="${esc(data.pageUrl)}">
+  <meta name="twitter:title" content="${esc(data.pageTitle)}">
+  <meta name="twitter:description" content="${esc(data.pageDescription)}">
+  <meta name="twitter:image" content="${esc(data.ogImage)}">
+  ${schemaScript}
+  ${data.speed.inline ? `<style>${criticalCss.replace(/\s+/g, ' ').trim()}</style>` : '<link rel="stylesheet" href="your-styles.css">'}
+  ${data.speed.inline ? `<noscript><link rel="stylesheet" href="your-styles.css"></noscript>`: ''}`;
+
+  const faqsHtml = data.faqs.length ? (`
+    <section class="faq">
+      <h2>Frequently Asked Questions (FAQs)</h2>
+      ${data.faqs.map(x=>`<details><summary><strong>${esc(x.q)}</strong></summary><p>${esc(x.a)}</p></details>`).join("\n      ")}
+    </section>
+  `) : "";
+
+  const related = getRelated();
+  const relatedHtml = related.length ? (`
+    <section class="related">
+      <h2>Related Articles</h2>
+      <ul>
+        ${related.map(r=>`<li><a href="${esc(r.u)}">${esc(r.t)}</a></li>`).join("\n        ")}
+      </ul>
+    </section>
+  `) : "";
+  
+  const videoEmbedUrl = data.videoUrl ? data.videoUrl.replace("watch?v=", "embed/") : "";
+
+  let body = `<!doctype html>
+<html lang="${esc(data.inLanguage)}">
+<head>
+  ${head}
+</head>
+<body>
+  <div class="container">
+    <header>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+          ${buildBreadcrumb(data.pageUrl, data.breadcrumbLast).map((item, index) => `
+          <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a itemprop="item" href="${esc(item.item)}"><span itemprop="name">${esc(item.name)}</span></a>
+            <meta itemprop="position" content="${index + 1}" />
+          </li>`).join('')}
+        </ol>
+      </nav>
+      <h1>${esc(data.articleHeadline)}</h1>
+      <div class="meta">
+        <span>Updated: <time datetime="${new Date().toISOString()}">${(new Date()).toLocaleString()}</time></span>
+        <span>Source: <a href="${esc(data.orgUrl)}">${esc(data.orgName)}</a></span>
+      </div>
+    </header>
+    <main>
+      <article>
+        ${data.speed.lazy ? (data.articleBody || "").replace(/<img /g, '<img loading="lazy" ') : (data.articleBody || "")}
+        ${data.videoUrl ? `<div class="video"><iframe src="${esc(videoEmbedUrl)}" title="${esc(data.pageTitle)}" ${data.speed.lazy?'loading="lazy"':''} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>` : ""}
+      </article>
+      ${faqsHtml}
+      ${relatedHtml}
+    </main>
+    <footer>
+      <p>© ${(new Date()).getFullYear()} ${esc(data.orgName)}. All rights reserved.</p>
+    </footer>
+  </div>
+  ${data.speed.defer ? '<script src="deferred-scripts.js" defer></script>' : ''}
+</body>
+</html>`;
+
+  let outName = data.fileName + (which==="php" ? ".php" : ".html");
+  const blob = new Blob([body], {type: which==="php" ? "application/x-httpd-php" : "text/html;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href=url; a.download=outName; a.click(); setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+function esc(s){ return (s||"").replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m])); }
+function gi(id){ return document.getElementById(id).checked; }
+</script>
+</body>
+</html>
