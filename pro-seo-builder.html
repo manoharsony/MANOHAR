@@ -507,7 +507,7 @@ function generate(which){
           <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
             <a itemprop="item" href="${esc(item.item)}"><span itemprop="name">${esc(item.name)}</span></a>
             <meta itemprop="position" content="${index + 1}" />
-          </li>`).join('')}
+          </li>`).join('') /* separators handled via CSS */}
         </ol>
       </nav>
       <h1>${esc(data.articleHeadline)}</h1>
